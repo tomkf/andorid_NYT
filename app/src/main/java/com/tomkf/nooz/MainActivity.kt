@@ -4,7 +4,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.tomkf.nooz.network.Article
 import com.tomkf.nooz.network.ArticleResponse
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
@@ -32,9 +37,21 @@ class MainActivity : AppCompatActivity() {
         suspend fun getPopularArticlesAsync(@Query("api-key") apiKey: String): ArticleResponse
     }
 
+    // This is our coroutine (by adding GlobalScope launch Main)
+    private fun getPopularArticles() = GlobalScope.launch(Dispatchers.Main){
+        // This implements the interface asynchronously
+        // without blocking the main thread and potentially freezing our app
+        val firstResult: Article = api.getPopularArticlesAsync(BuildConfig.API_KEY).results.first()
+
+        // Upon completion of the HTTP request we update the layout element
+        introText.text = firstResult.title
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // We will use a coroutine to help us simplify the asynchronous code
+        getPopularArticles()
     }
 }
