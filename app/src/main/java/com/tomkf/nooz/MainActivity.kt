@@ -22,11 +22,12 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     private val api = NewsAPI()
     private var articles: List<Article> = listOf()
-    private class ArticleViewHolder(view: View): RecyclerView.ViewHolder(view)
+
+    private class ArticleViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.article_list)
 
         // We will use a coroutine to help us simplify the asynchronous code
         loadPopularArticles()
@@ -45,9 +46,15 @@ class MainActivity : AppCompatActivity() {
         article_list.layoutManager = GridLayoutManager(this, 2)
     }
 
-    private class ArticleAdaptor (val recipes: List<Article>, val context: Context): RecyclerView.Adapter<ArticleViewHolder>() {
+    private class ArticleAdaptor(val recipes: List<Article>, val context: Context) : RecyclerView.Adapter<ArticleViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
-            return ArticleViewHolder(LayoutInflater.from(context).inflate(R.layout.article_list, parent, false))
+            return ArticleViewHolder(
+                LayoutInflater.from(context).inflate(
+                    R.layout.article_list,
+                    parent,
+                    false
+                )
+            )
         }
 
         override fun getItemCount(): Int {
@@ -59,3 +66,4 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+}
