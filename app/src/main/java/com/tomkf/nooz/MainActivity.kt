@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -16,32 +17,25 @@ import kotlinx.android.synthetic.main.item_article.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.compat.ScopeCompat.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class MainActivity : AppCompatActivity() {
-    private val api = NewsAPI()
-    private var articles: List<Article> = listOf()
+    private val articlesViewModel: ArticlesViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         article_list.layoutManager = GridLayoutManager(this, 2)
-        // We will use a coroutine to help us simplify the asynchronous code
-        loadPopularArticles()
-    }
 
-    private fun loadPopularArticles() = GlobalScope.launch(Dispatchers.Main) {
-        val popularArticles = api.getPopularArticles()
+        articlesViewModel.loadPopularArticles()
 
-        if (popularArticles != null) {
-            articles = popularArticles
-            update()
-        }
-    }
-
-    private fun update() {
-        article_list.adapter = ArticleAdaptor(articles, this)
+        articlesViewModel.articles.observe(this, Observer { articles ->
+            articles ?: return@Observer
+            article_list.adapter = ArticleAdaptor(articles, this)
+        })
     }
 }
 
