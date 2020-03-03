@@ -1,5 +1,6 @@
 package com.tomkf.nooz.network
 
+import android.util.Log
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.tomkf.nooz.BuildConfig
@@ -29,11 +30,14 @@ class NewsAPI() {
     private var api: API = retrofit!!.create<API>(API::class.java)
 
     // This is our coroutine (by adding GlobalScope launch Main)
-    private fun getPopularArticles() = GlobalScope.launch(Dispatchers.Main){
-        // This implements the interface asynchronously
-        // without blocking the main thread and potentially freezing our app
-        val firstResult: Article = api.getPopularArticlesAsync(BuildConfig.API_KEY).results.first()
-
+    suspend fun getPopularArticles() : List<Article>? {
+        return try {
+            val response = api.getPopularArticlesAsync(BuildConfig.API_KEY)
+            response.results
+        } catch (e: Exception) {
+            Log.e(e.toString(), e.localizedMessage)
+            null
+        }
     }
 }
 
