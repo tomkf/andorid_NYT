@@ -19,5 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ArticlesViewModel" />
+        <activity
+            android:name=".ArticleActivity"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 </manifest>
