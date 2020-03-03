@@ -12,6 +12,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
+
 class NewsAPI() {
     // Moshi to help parse our JSON response into kotlin class objects
     private val moshi = Moshi.Builder()

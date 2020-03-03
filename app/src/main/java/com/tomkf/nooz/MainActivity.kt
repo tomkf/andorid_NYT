@@ -3,6 +3,7 @@ package com.tomkf.nooz
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tomkf.nooz.network.Article
 import com.tomkf.nooz.network.API
 import com.tomkf.nooz.network.ArticleResponse
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.article_list)
 
         // We will use a coroutine to help us simplify the asynchronous code
         loadPopularArticles()
@@ -27,9 +28,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadPopularArticles() = GlobalScope.launch(Dispatchers.Main) {
         val popularArticles = api.getPopularArticles()
-        if(popularArticles != null) {
+
+        if (popularArticles != null) {
             articles = popularArticles
-            introText.text = articles.first().title
+            update()
         }
     }
+
+    private fun update() {
+//        article_list.adapter = ArticlesAdapter(articles, this)
+        article_list.layoutManager = GridLayoutManager(this, 2)
+    }
+
 }
