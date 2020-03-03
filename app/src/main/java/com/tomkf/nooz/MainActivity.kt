@@ -36,6 +36,11 @@ class MainActivity : AppCompatActivity() {
             articles ?: return@Observer
             article_list.adapter = ArticleAdaptor(articles, this)
         })
+
+        swipe_refresh_articles_layout.setOnRefreshListener {
+            articlesViewModel.loadPopularArticles()
+            swipe_refresh_articles_layout.isRefreshing = false
+        }
     }
 }
 
